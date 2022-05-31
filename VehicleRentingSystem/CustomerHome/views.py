@@ -79,6 +79,21 @@ def LoginAuthentication(request):
         Message = "Invalid Email or password!!"
         return render(request,'SignIn.html',{'Message':Message})
 
+def FilterVehicle(request):
+    if request.POST.get('under1000',''):
+        result_vehicles=Vehicle.objects.filter(Vehicle_price__lte=1000)
+    elif request.POST.get('range1-2000',''):
+        result_vehicles=Vehicle.objects.filter(Vehicle_price__range=[1000,2000])
+    else: result_vehicles=Vehicle.objects.filter(Vehicle_price__gte=2000)
+    return render(request,'Home.html',{'vehicle':result_vehicles})
+
+
+def VehicleSearch(request):
+    if request.POST:
+        searchValue=request.POST.get('vehicleType','')
+        result_vehicles=Vehicle.objects.filter(Vehicle_type=searchValue)
+        return render(request,'Home.html',{'vehicle':result_vehicles})
+
 def RegisterCustomer(request):
     global isLogin
 
