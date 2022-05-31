@@ -80,17 +80,41 @@ def LoginAuthentication(request):
         return render(request,'SignIn.html',{'Message':Message})
 
 def FilterVehicle(request):
-    if request.POST.get('under1000',''):
-        result_vehicles=Vehicle.objects.filter(Vehicle_price__lte=1000)
-    elif request.POST.get('range1-2000',''):
-        result_vehicles=Vehicle.objects.filter(Vehicle_price__range=[1000,2000])
-    else: result_vehicles=Vehicle.objects.filter(Vehicle_price__gte=2000)
-    return render(request,'Home.html',{'vehicle':result_vehicles})
+    try:
+        if request.POST.get('under1000',''):
+            result_vehicles=Vehicle.objects.filter(Vehicle_price__lte=1000)
+        if request.POST.get('range1-2000',''):
+            result_vehicles=Vehicle.objects.filter(Vehicle_price__range=[1000,2000])
+        if request.POST.get('above2000',''):
+            result_vehicles=Vehicle.objects.filter(Vehicle_price__gte=2000)
+        
+        if request.POST.get('car',''):
+            print('carn section')
+            result_vehicles=Vehicle.objects.filter(Vehicle_type='Car')
+        
+        if request.POST.get('bike',''):
+            result_vehicles=Vehicle.objects.filter(Vehicle_type='Bike')
+            
+        if request.POST.get('van',''):
+            result_vehicles=Vehicle.objects.filter(Vehicle_type='Tourist Van')
+        
+        if request.POST.get('cycle',''):
+            result_vehicles=Vehicle.objects.filter(Vehicle_type='Bicycle')
+        
+        if request.POST.get('scooter',''):
+            result_vehicles=Vehicle.objects.filter(Vehicle_type='Scooter')
+        # result_vehicles=result_vehicles1 | result_vehicles2
+        return render(request,'Home.html',{'vehicle':result_vehicles})
+    except:
+        print('here')
+        result_vehicles=Vehicle.objects.all()
+        return render(request,'Home.html',{'vehicle':result_vehicles})
 
 
 def VehicleSearch(request):
     if request.POST:
         searchValue=request.POST.get('vehicleType','')
+        print(searchValue)
         result_vehicles=Vehicle.objects.filter(Vehicle_type=searchValue)
         return render(request,'Home.html',{'vehicle':result_vehicles})
 
